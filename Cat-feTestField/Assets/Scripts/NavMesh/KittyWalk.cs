@@ -3,24 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class KittyWalk : MonoBehaviour
+namespace TsingIGME601
 {
-
-    private NavMeshAgent agent;
-    void Start()
+    public class KittyWalk : MonoBehaviour
     {
-        agent = GetComponent<NavMeshAgent>();
-    }
 
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(1))
+        private NavMeshAgent agent;
+        void Start()
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+            agent = GetComponent<NavMeshAgent>();
+        }
+
+        void Update()
+        {
+            if (Input.GetMouseButtonDown(1))
             {
-                agent.SetDestination(hit.point);
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+                {
+                    agent.SetDestination(hit.point);
+                }
             }
         }
     }
+
 }

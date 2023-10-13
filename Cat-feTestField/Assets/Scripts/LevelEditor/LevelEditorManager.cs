@@ -2,31 +2,57 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelEditorManager : MonoBehaviour
+
+namespace TsingIGME601
 {
-    public ItemController[] ItemButtons;
-    public GameObject[] ItemPrefabs;
-    public GameObject[] ItemImages;
-    public int CurrentButtonPressed;
-
-    public GameObject ItemImage;
-
-    private void Update()
+    public class LevelEditorManager : MonoBehaviour
     {
-        if(Input.GetMouseButtonDown(0) && ItemButtons[CurrentButtonPressed].Clicked)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
-            {
-                ItemButtons[CurrentButtonPressed].Clicked = false;
-                Instantiate(ItemPrefabs[CurrentButtonPressed], hit.point, Quaternion.identity);
+        public ItemController[] ItemButtons;
+        public GameObject[] ItemPrefabs;
+        public int CurrentButtonPressed = -1;
 
-                //Destroy the image
-                if(ItemImage  != null)
+        public GameObject ItemPreview;
+        public Material _previewMaterial;
+
+        private void Start()
+        {
+            CurrentButtonPressed = -1;
+        }
+        private void Update()
+        {
+            //Actually build on surfaces
+            if (Input.GetMouseButtonDown(0) && CurrentButtonPressed != -1)//ItemButtons[CurrentButtonPressed].Clicked
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
                 {
-                    Destroy(ItemImage);
+                    //Build
+                    ItemButtons[CurrentButtonPressed].Clicked = false;
+                    Instantiate(ItemPrefabs[CurrentButtonPressed], hit.point, hit.transform.rotation);
+                    CurrentButtonPressed = -1;
+
+                    //Destroy the image
+                    if (ItemPreview != null)
+                    {
+                        Destroy(ItemPreview);
+                    }
                 }
             }
         }
+
+        public void SpawnPreview(int id)
+        {
+            //instantiate a preview that follows the mouse
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            ItemPreview = Instantiate(ItemPrefabs[id], worldPos, Quaternion.identity);
+            ItemPreview.SetActive(true);
+            ItemPreview.AddComponent<PreviewFollowMouse>();
+
+            //change material to transparent
+            ItemPreview.GetComponent<MeshRenderer>().material = _previewMaterial;
+
+
+        }
     }
 }
+

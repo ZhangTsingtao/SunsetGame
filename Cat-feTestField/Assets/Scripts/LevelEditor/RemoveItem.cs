@@ -2,24 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RemoveItem : MonoBehaviour
+namespace TsingIGME601 
 {
-    public int ID;
-    private LevelEditorManager _editor;
-
-    void Start()
+    public class RemoveItem : MonoBehaviour
     {
-        _editor = GameObject.FindGameObjectWithTag("LevelEditorManager").
-            GetComponent<LevelEditorManager>();
-    }
+        public int ID;
+        private LevelEditorManager _editor;
 
-    private void OnMouseOver()
-    {
-        if(Input.GetMouseButtonDown(0))
+        void Start()
         {
-            Destroy(this.gameObject);
-            _editor.ItemButtons[ID].quantity++;
-            _editor.ItemButtons[ID].quantityText.text = _editor.ItemButtons[ID].quantity.ToString();
+            _editor = GameObject.FindGameObjectWithTag("LevelEditorManager").
+                GetComponent<LevelEditorManager>();
+        }
+
+        private void OnMouseOver()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Destroy(this.gameObject);
+                _editor.ItemButtons[ID].quantity++;
+                _editor.ItemButtons[ID].quantityText.text = _editor.ItemButtons[ID].quantity.ToString();
+            }
         }
     }
 }
+

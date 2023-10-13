@@ -4,44 +4,48 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class ItemController : MonoBehaviour
+namespace TsingIGME601
 {
-    public int ID;
-    public int quantity;
-    public TextMeshProUGUI quantityText;
-    public bool Clicked = false;
-
-    private Button _button;
-    private LevelEditorManager _editor;
-    void Start()
+    public class ItemController : MonoBehaviour
     {
-        quantityText.text = quantity.ToString();
-        _button = GetComponent<Button>();
-        _button.onClick.AddListener(ButtonClicked);
-        _editor = GameObject.FindGameObjectWithTag("LevelEditorManager").
-            GetComponent<LevelEditorManager>();
-    }
+        public int ID;
+        public int quantity;
+        public TextMeshProUGUI quantityText;
+        public bool Clicked = false;
 
-    public void ButtonClicked()
-    {
-        if(quantity > 0)
+        private Button _button;
+        private LevelEditorManager _editor;
+        void Start()
         {
-            //not clickable until placed, and change quantity left
-            Clicked = true;
-            quantity--;
             quantityText.text = quantity.ToString();
-
-            //couple with LevelEditorManager
-            _editor.CurrentButtonPressed = ID;
-
-            //instantiate an image that follows the mouse
-            Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            _editor.ItemImage = Instantiate(_editor.ItemImages[ID], worldPos,
-                GameObject.FindGameObjectWithTag("MainCamera").transform.rotation);
-            _editor.ItemImage.transform.position = new Vector3(worldPos.x, worldPos.y, worldPos.z + 10);
-            _editor.ItemImage.SetActive(true);
-
+            _button = GetComponent<Button>();
+            _button.onClick.AddListener(ButtonClicked);//Don't need to add event in inspector
+            
+            //Get the LevelEditorManager
+            //Maybe need change from finding by tag, but let's keep it for now
+            _editor = GameObject.FindGameObjectWithTag("LevelEditorManager").
+                GetComponent<LevelEditorManager>();
         }
-    }
 
+        public void ButtonClicked()
+        {
+            //check anything left, and if the manager is free (no other assets being clicked)
+            if (quantity > 0 && _editor.CurrentButtonPressed == -1)
+            {
+                //not clickable until placed, and change quantity left
+                Clicked = true;
+                quantity--;
+                quantityText.text = quantity.ToString();
+
+                //couple with LevelEditorManager
+                //let manager get the right one
+                _editor.CurrentButtonPressed = ID;
+
+                //Let manager instantiate a preview that follows the mouse
+                _editor.SpawnPreview(ID);
+            }
+        }
+
+    }
 }
+

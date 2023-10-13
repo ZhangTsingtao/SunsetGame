@@ -4,33 +4,38 @@ using UnityEngine;
 using Unity;
 using Unity.AI.Navigation;
 
-public class NavMeshManager : MonoBehaviour
+
+namespace TsingIGME601
 {
-    [SerializeField] public GameObject[] Obstacles;
-
-    [SerializeField] public NavMeshSurface[] Surfaces;
-
-    private bool _click = true;
-
-    void Update()
+    public class NavMeshManager : MonoBehaviour
     {
-        if (Input.GetKeyDown(KeyCode.X))
+        [SerializeField] public GameObject[] Obstacles;
+
+        [SerializeField] public NavMeshSurface[] Surfaces;
+
+        private bool _click = true;
+
+        void Update()
         {
-            PopObstacles();
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                PopObstacles();
+            }
+        }
+
+        private void PopObstacles()
+        {
+            _click = !_click;
+            foreach (GameObject obstacle in Obstacles)
+            {
+                obstacle.SetActive(_click);
+            }
+
+            foreach (NavMeshSurface surface in Surfaces)
+            {
+                surface.UpdateNavMesh(surface.navMeshData);
+            }
         }
     }
 
-    private void PopObstacles()
-    {
-        _click = !_click;
-        foreach (GameObject obstacle in Obstacles)
-        {
-            obstacle.SetActive(_click);
-        }
-
-        foreach (NavMeshSurface surface in Surfaces)
-        {
-            surface.UpdateNavMesh(surface.navMeshData);
-        }
-    }
 }
